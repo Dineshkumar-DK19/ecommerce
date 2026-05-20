@@ -4,11 +4,13 @@ import Title from "../components/Title";
 import { useState } from "react";
 import { useEffect } from "react";
 import axios from "axios";
+import { toast } from "react-toastify";
 
 const Orders = () => {
   const { backendUrl, token, currency } = useContext(ShopContext);
 
   const [orderData, setOrderData] = useState([]);
+
   const loadOrderData = async () => {
     try {
       if (!token) {
@@ -23,18 +25,23 @@ const Orders = () => {
         let allOrdersItem = [];
         response.data.orders.map((order) =>
           order.items.map((item) => {
-            item["status"] = order.status;
-            item["payment"] = order.payment;
-            item["paymentMethod"] = order.paymentMethod;
-            item["date"] = order.date;
+            let itemCopy = { ...item }; // Copy the item object so we don't mutate the original
+            itemCopy["status"] = order.status;
+            itemCopy["payment"] = order.payment;
+            itemCopy["paymentMethod"] = order.paymentMethod;
+            itemCopy["date"] = order.date;
 
-            allOrdersItem.push(item);
+            allOrdersItem.push(itemCopy);
           })
         );
-       setOrderData(allOrdersItem.reverse())
+        setOrderData([...allOrdersItem].reverse());
+        toast.success("Order status refreshed!");
+      } else {
+        toast.error(response.data.message);
       }
     } catch (error) {
       console.log(error);
+      toast.error(error.message);
     }
   };
 
@@ -77,7 +84,7 @@ const Orders = () => {
                 <p className="min-w-2 h-2 rounded-full bg-green-500"></p>
                 <p className="text:sm md:text-base">{item.status}</p>
               </div>
-              <button onCanPlay={loadOrderData} className="border border-gray-300 px-4 py-2 text-sm font-medium rounded cursor-pointer text-white bg-black">
+              <button onClick={loadOrderData} className="border border-gray-300 px-4 py-2 text-sm font-medium rounded cursor-pointer text-white bg-black">
                 Track Order
               </button>
             </div>
