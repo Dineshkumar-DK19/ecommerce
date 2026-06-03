@@ -4,7 +4,7 @@ import axios from "axios";
 import { toast } from "react-toastify";
 
 const Login = () => {
-  const [currentState, setCurrentState] = useState("sign up");
+  const [currentState, setCurrentState] = useState("Sign Up");
   const { token, setToken, backendUrl, navigate } = useContext(ShopContext);
 
   const [name, setName] = useState("");
@@ -14,7 +14,7 @@ const Login = () => {
   const onSubmitHandler = async (event) => {
     event.preventDefault();
     try {
-      if (currentState === "sign up") {
+      if (currentState === "Sign Up") {
         const response = await axios.post(`${backendUrl}/api/user/register`, {
           name,
           email,
