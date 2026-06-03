@@ -34,4 +34,5 @@ res.send("Api working")})
 
 
 
-app.listen(port,()=>{console.log('server started on port :'+port)})
+import { onRequest } from "firebase-functions/v2/https";
+export const api = onRequest(app);
